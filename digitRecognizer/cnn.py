@@ -10,9 +10,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 import itertools
 
+from keras.datasets import  cifar10
 from keras.utils.np_utils import to_categorical # convert to one-hot-encoding
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D
+from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPool2D, BatchNormalization
 from keras.optimizers import RMSprop
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ReduceLROnPlateau
@@ -67,13 +68,12 @@ model.add(Conv2D(filters = 64, kernel_size = (3,3),padding = 'Same',
                  activation ='relu'))
 model.add(MaxPool2D(pool_size=(2,2), strides=(2,2)))
 model.add(Dropout(0.25))
-
-
+BatchNormalization
 model.add(Flatten())
 model.add(Dense(256, activation="relu"))
 model.add(Dropout(0.5))
 model.add(Dense(10, activation="softmax"))
-
+model.summary()
 # Define the optimizer
 optimizer = RMSprop(lr=0.001, rho=0.9, epsilon=1e-08, decay=0.0)
 # Compile the model
@@ -109,6 +109,9 @@ history = model.fit_generator(datagen.flow(X_train,Y_train, batch_size=batch_siz
                               verbose = 2, steps_per_epoch=X_train.shape[0] // batch_size
                               , callbacks=[learning_rate_reduction])
 
+from keras.callbacks import EarlyStopping
+early_stopping = EarlyStopping(monitor='val_loss', patience=2)
+model.fit(x, y, validation_split=0.2, callbacks=[early_stopping])
 # Plot the loss and accuracy curves for training and validation
 fig, ax = plt.subplots(2,1)
 ax[0].plot(history.history['loss'], color='b', label="Training loss")

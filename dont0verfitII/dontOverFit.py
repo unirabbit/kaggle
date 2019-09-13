@@ -17,6 +17,8 @@ n_fold = 20
 folds = StratifiedKFold(n_splits=n_fold, shuffle=True, random_state=42)
 repeated_folds = RepeatedStratifiedKFold(n_splits=20, n_repeats=20, random_state=42)
 
+y_train.hist()
+plt.show()
 scaler = StandardScaler()
 X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
